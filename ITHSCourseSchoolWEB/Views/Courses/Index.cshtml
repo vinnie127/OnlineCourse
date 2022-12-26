@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ITHSCourseSchoolWEB.Models.DTO.Course.CreateCourseDTO>    
+
+
+
+
+	<div class="row">
+		<div class="col-6">
+            <h2 class="text-primary">Course List</h2>
+        </div>
+			<div class="col-6">
+		<a asp-action="CreateCourse" class="btn btn-info text-white"><i class="fas fa-plus"></i> &nbsp; Create New Course</a>
+        </div>
+	</div>
+
+
+        <table class="table">
+		<thead>
+			<tr>
+				<th>
+					CourseId
+				</th>
+				<th>
+					courseTitle
+				</th>
+				<th>
+					courseStart
+				</th>
+					<th>
+					courseEnd
+				</th>
+				<th>Edit / Delete / students</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var item in Model)
+			{
+
+				<tr>
+					<td>@item.Id</td>
+					<td>@item.CourseTitle</td>
+					<td>@item.CourseStart</td>
+					<td>@item.CourseEnd</td>
+					<td>
+					<a asp-controller="Courses" asp-action="EditCourse" asp-route-id="@item.Id" class=" btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i>Edit</a>&nbsp;
+					<a asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id" class=" btn btn-sm btn-danger"><i class="bi bi-pencil-square"></i>Delete</a>&nbsp;
+					<a asp-controller="Auth" asp-action="JoinCourse" asp-route-id="@item.Id" class=" btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i>Join Course</a>&nbsp;
+					<a asp-controller="Courses" asp-action="StudentList" asp-route-id="@item.Id" class=" btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i>Students</a>&nbsp;
+				</td>
+				</tr>
+				
+			}
+		</tbody>
+    </table>
+

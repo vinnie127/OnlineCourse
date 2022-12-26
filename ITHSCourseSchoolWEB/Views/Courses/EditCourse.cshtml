@@ -1,0 +1,43 @@
+﻿@model ITHSCourseSchoolWEB.Models.Course
+
+<div class="container shadow p-5">
+    <div class="row pb-2">
+        <h2>Edit Course</h2>
+    </div>
+
+    <form method="post" asp-action="EditCourse">
+        <div asp-validation-summary="All"></div>
+         <input type="hidden" value ="@ViewBag.Id" name = "courseId"/>
+        <div class="form-row"> 
+             
+            <div class="form-group col-md-6">
+                <label asp-for="CourseTitle"> Course Title</label>
+                <input type="text" class="form-control mb-3" asp-for="CourseTitle">
+                <span asp-validation-for="CourseTitle" class=" alert-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="CourseStart">Course start</label>
+                <input type="date" class="form-control mb-3" asp-for="CourseStart">
+                <span asp-validation-for="CourseStart" class=" alert-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="CourseEnd">Course End</label>
+                <input type="date" class="form-control mb-3" asp-for="CourseEnd">
+                <span asp-validation-for="CourseEnd" class=" alert-danger"></span>
+            </div>
+        </div>
+
+       
+        <button type="submit"  class="btn btn-lg btn-primary p-2"><i class="bi bi-file-plus-fill"></i>Update</button>
+        <a asp-controller="Courses" asp-action="Index" class="btn btn-lg btn-warning p-2">Back To List</a>
+    </form>
+
+</div>
+
+
+
+@section Scripts{
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+}
