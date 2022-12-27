@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ITHSCourse_Utility;
 using ITHSCourseSchoolWEB.Models;
 using ITHSCourseSchoolWEB.Models.DTO.Course;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
@@ -24,12 +25,12 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<CreateCourseDTO> list = new();
+            List<ViewCourseDetailsDTO> list = new();
 
-            var response = await _cRepo.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SDApi.SessionToken));
+            var response = await _cRepo.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
-                list = JsonConvert.DeserializeObject<List<CreateCourseDTO>>(Convert.ToString(response.Result));
+                list = JsonConvert.DeserializeObject<List<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
             }
             return View(list);
         }
@@ -49,8 +50,10 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         //[Authorize(Roles = "admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCourse(CreateCourseDTO model)
         {
+
 
             if (ModelState.IsValid)
             {
@@ -79,18 +82,15 @@ namespace ITHSCourseSchoolWEB.Controllers
             if (response != null && response.IsSuccess)
             {
 
-                CreateCourseDTO model = JsonConvert.DeserializeObject<CreateCourseDTO>(Convert.ToString(response.Result));
+                Course model = JsonConvert.DeserializeObject<Course>(Convert.ToString(response.Result));
                 return View(_mapper.Map<CreateCourseDTO>(model));
             }
             return NotFound();
 
         }
 
-
-
-
         //[Authorize(Roles = "admin")]
-        [HttpPost]
+        [HttpPatch]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCourse(CreateCourseDTO course)
         {
@@ -126,18 +126,18 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         }
 
-        public async Task<IActionResult> ListOfUsersInCourse(int id)
-        {
+        //public async Task<IActionResult> ListOfUsersInCourse(int id)
+        //{
 
 
-            var result = await _cRepo.GetStudents(SD.StudentsInCourseAPI, id);
+        //    var result = await _cRepo.GetStudents(SD.StudentsInCourseAPI, id);
 
-            var resultJson = Json(new { data = result.FirstOrDefault()?.Users });
+        //    var resultJson = Json(new { data = result.FirstOrDefault()?.Users });
 
-            return resultJson;
+        //    return resultJson;
 
 
-        }
+        //}
 
         public async Task<IActionResult> StudentList(int id)
         {

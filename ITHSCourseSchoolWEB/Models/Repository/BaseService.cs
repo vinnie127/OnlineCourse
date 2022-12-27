@@ -1,4 +1,5 @@
-﻿using ITHSCourseSchoolWEB.Models.Repository.IRepository;
+﻿using ITHSCourse_Utility;
+using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
@@ -32,13 +33,13 @@ namespace ITHSCourseSchoolWEB.Models.Repository
                 }
                 switch (apiRequest.ApiType)
                 {
-                    case SDApi.ApiType.POST:
+                    case SD.ApiType.POST:
                         message.Method = HttpMethod.Post;
                         break;
-                    case SDApi.ApiType.PATCH:
+                    case SD.ApiType.PATCH:
                         message.Method = HttpMethod.Patch;
                         break;
-                    case SDApi.ApiType.DELETE:
+                    case SD.ApiType.DELETE:
                         message.Method = HttpMethod.Delete;
                         break;
                     default:

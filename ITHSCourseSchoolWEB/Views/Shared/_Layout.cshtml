@@ -1,4 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+﻿@using ITHSCourse_Utility
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
 
 @{
     
@@ -37,7 +38,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
                         </li>
  
-                        @if(httpAcc.HttpContext.Session.GetString(SDApi.SessionToken) !=null && httpAcc.HttpContext.Session.GetString(SDApi.SessionToken).ToString().Length > 0)
+                        @if(httpAcc.HttpContext.Session.GetString(SD.SessionToken) !=null && httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0)
                         {                             
                         <li class="nav-item">
                             <a class="nav-link text-dark"  asp-controller="Auth" asp-action="Logout">Logout : @TempData["User"]</a>

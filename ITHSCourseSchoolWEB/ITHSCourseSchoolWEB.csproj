@@ -29,4 +29,8 @@
     <Folder Include="wwwroot\Image\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ITHSCourse_Utility\ITHSCourse_Utility.csproj" />
+  </ItemGroup>
+
 </Project>

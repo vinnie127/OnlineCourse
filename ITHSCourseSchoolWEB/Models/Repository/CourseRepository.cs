@@ -1,4 +1,5 @@
-﻿using ITHSCourseSchoolWEB.Models.DTO.Course;
+﻿using ITHSCourse_Utility;
+using ITHSCourseSchoolWEB.Models.DTO.Course;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 using Newtonsoft.Json;
 
@@ -25,9 +26,9 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.POST,
+                ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = courseUrl + "/api/Course",
+                Url = courseUrl +"/api/Course",
                 Token = token
             });
         }
@@ -36,8 +37,8 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.DELETE,
-                Url = courseUrl + "/api/Course" + id,
+                ApiType = SD.ApiType.DELETE,
+                Url = courseUrl +"/api/Course" + id,
                 Token = token
             });
         }
@@ -46,8 +47,8 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.GET,
-                Url = courseUrl + "/api/Course/Courses",
+                ApiType = SD.ApiType.GET,
+                Url = courseUrl +"/api/Course/Courses",
                 Token = token
             });
         }
@@ -56,8 +57,8 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.GET,
-                Url = courseUrl + "/api/Course" + Id,
+                ApiType = SD.ApiType.GET,
+                Url = courseUrl +"/api/Course/" + Id,
                 Token = token
             });
 
@@ -68,9 +69,9 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.PUT,
+                ApiType = SD.ApiType.PUT,
                 Data = dto,
-                Url = courseUrl + "/api/Course" + dto.Id,
+                Url = courseUrl +"/api/Course" + dto.Id,
                 Token = token
             });
         }

@@ -1,4 +1,5 @@
-﻿using ITHSCourseSchoolWEB.Models.DTO.User;
+﻿using ITHSCourse_Utility;
+using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 
 namespace ITHSCourseSchoolWEB.Models.Repository
@@ -22,7 +23,7 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.POST,
+                ApiType = SD.ApiType.POST,
                 Data = obj,
                 Url = villaUrl + "/api/Users/login"
             });
@@ -34,7 +35,7 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SDApi.ApiType.POST,
+                ApiType = SD.ApiType.POST,
                 Data = obj,
                 Url = villaUrl + "/api/Users/register"
             });

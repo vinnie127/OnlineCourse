@@ -6,6 +6,7 @@ using ITHSCourseSchool.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net;
 
 namespace ITHSCourseSchool.Controllers
 {
@@ -17,99 +18,160 @@ namespace ITHSCourseSchool.Controllers
 
         private readonly ICourseRepository _courseRepo;
         private readonly IMapper _mapper;
-
+        protected APIResponse _response;
 
 
         public CourseController(ICourseRepository courseRepo, IMapper mapper)
         {
             _courseRepo = courseRepo;
             _mapper = mapper;
+            this._response = new();
         }
 
 
         [HttpGet("Courses")]
         [ProducesResponseType(200, Type = typeof(List<ViewCourseDetailsDTO>))]
-        public IActionResult GetCourses()
+        public async Task<ActionResult<APIResponse>> GetCourses()
         {
-            
-           var courses = _courseRepo.GetCourses();
 
-            
+            try
+            {
+                IEnumerable<Course> courseList = await _courseRepo.GetAllAsync();
+                _response.Result = _mapper.Map<List<ViewCourseDetailsDTO>>(courseList);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+
+            return _response; 
 
 
-            return Ok(courses);
             
         }
 
 
+
         [HttpPost("CreateCourse")]
-        [Authorize(Roles= "student")]
         [ProducesResponseType(201, Type = typeof(Course))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CreateCourse([FromBody] RegisterCourseDTO course)
+        public async Task<ActionResult<APIResponse>> CreateCourse([FromBody] RegisterCourseDTO course)
         {
-
-            if (course == null)
+            try
             {
-                return BadRequest(ModelState);
+
+
+
+
+                if (await _courseRepo.GetAsync(u => u.CourseTitle.ToLower() == course.CourseTitle.ToLower()) != null)
+                {
+
+                    ModelState.AddModelError("ErrorMessages", "Course already exists!");
+                    return BadRequest(ModelState);
+
+                }
+
+
+                if (course == null)
+                {
+                    return BadRequest(ModelState);
+                }
+
+
+
+                Course courseObj = _mapper.Map<Course>(course);
+
+                await _courseRepo.CreateAsync(courseObj);
+
+                _response.Result = _mapper.Map<ViewCourseDetailsDTO>(courseObj);
+                _response.StatusCode = HttpStatusCode.Created;
+
+                return CreatedAtRoute("GetCourse", new { CourseId = courseObj.Id }, courseObj);
+
             }
 
-           
-            var courseObj = _mapper.Map<Course>(course);
-            
-            if (!_courseRepo.CreateCourse(courseObj))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Something went wrong when saving the record {courseObj.CourseTitle} or the title already exists");
-                return StatusCode(500, ModelState);
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
 
-
-            return CreatedAtRoute("GetCourse", new { CourseId = courseObj.Id }, courseObj);
+            return _response;
         }
 
 
-        [HttpGet("[action]/{id:int}")]
-        [ProducesResponseType(200, Type = typeof(ViewCourseDetailsDTO))]
-        public IActionResult GetUsers(int id)
-        {
 
-            var objList = _courseRepo.GetUsers(id);
+        //[HttpGet("[action]/{id:int}")]
+        //[ProducesResponseType(200, Type = typeof(ViewCourseDetailsDTO))]
+        //public IActionResult GetUsers(int id)
+        //{
+
+        //    var objList = _courseRepo.GetUsers(id);
            
-            if (objList == null)
-            {
-                return NotFound();
-            }
+        //    if (objList == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var objToShow = new List<ViewCourseDetailsDTO>();
+        //    var objToShow = new List<ViewCourseDetailsDTO>();
 
-            foreach (var obj in objList)
-            {
+        //    foreach (var obj in objList)
+        //    {
 
-                objToShow.Add(_mapper.Map<ViewCourseDetailsDTO>(obj));
+        //        objToShow.Add(_mapper.Map<ViewCourseDetailsDTO>(obj));
                 
-            }
+        //    }
      
-            return Ok(objToShow);
+        //    return Ok(objToShow);
 
-        }
+        //}
 
         [HttpGet("{courseId:int}", Name = "GetCourse")]
-        [ProducesResponseType(200, Type = typeof(Course))]
-        public IActionResult GetCourse(int courseId)
+        [ProducesResponseType(200, Type = typeof(ViewCourseDetailsDTO))]
+        public async Task<ActionResult<APIResponse>> GetCourse(int courseId)
         {
-            var objList = _courseRepo.GetCourseById(courseId);
 
-            if (objList == null)
+            try
             {
-                return NotFound();
+
+                if (courseId == 0)
+                {
+                    _response.StatusCode=HttpStatusCode.BadRequest;
+
+                    return BadRequest(_response);
+                }
+
+
+                Course objCourse = await _courseRepo.GetAsync(u => u.Id == courseId);
+
+                if (objCourse == null)
+                {
+                    return NotFound();
+                }
+
+                _response.Result = _mapper.Map<ViewCourseDetailsDTO>(objCourse);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+
+
             }
+
+
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+
+            return _response;
 
            
 
-
-            return Ok(objList);
         }
 
 
@@ -118,45 +180,90 @@ namespace ITHSCourseSchool.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult DeleteCourse(int courseId)
+        public async Task<ActionResult<APIResponse>> DeleteCourse(int courseId)
         {
 
-            var courseObj = _courseRepo.GetCourseById(courseId);
 
-            if (!_courseRepo.DeleteCourse(courseObj))
+            try
             {
-                ModelState.AddModelError("", $"Something went wrong when deleting the record {courseObj.CourseTitle}");
-                return StatusCode(500, ModelState);
 
+
+
+                if (courseId == 0)
+                {
+                    return BadRequest();
+                }
+
+                var courseObj = await _courseRepo.GetAsync(u => u.Id == courseId);
+
+                if (courseObj == null)
+                {
+
+                    ModelState.AddModelError("", $"Something went wrong when deleting the record {courseObj.CourseTitle}");
+                    return StatusCode(500, ModelState);
+
+
+                }
+
+
+                await _courseRepo.RemoveAsync(courseObj);
+
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+
+                return Ok(_response);
 
             }
 
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
 
-
-            return NoContent();
+            return _response;
 
         }
 
         
+
+
         [HttpPatch("{courseId:int}", Name = "UpdateCourse")]
-        public IActionResult UpdateCourse(int courseId, [FromBody] RegisterCourseDTO coursemodel)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> UpdateCourse(int courseId, [FromBody] RegisterCourseDTO coursemodel)
         {
-            if (coursemodel == null || courseId != coursemodel.Id)
+
+            try
             {
-                return BadRequest(ModelState);
+
+
+
+
+                if (coursemodel == null || courseId != coursemodel.Id)
+                {
+                    return BadRequest(ModelState);
+                }
+
+
+                Course courseObj = _mapper.Map<Course>(coursemodel);
+
+                await _courseRepo.UpdateAsync(courseObj);
+
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+
+                return Ok(_response);
+
             }
 
-            var courseObj = _mapper.Map<Course>(coursemodel);
-
-            if (!_courseRepo.UpdateCourse(courseObj))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Something went wrong when Updating the record {coursemodel.CourseTitle}");
-                return StatusCode(500, ModelState);
-
-
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
 
-            return Ok();
+            return _response;
 
         }
 

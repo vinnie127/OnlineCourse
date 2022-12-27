@@ -1,4 +1,4 @@
-﻿@model ITHSCourseSchoolWEB.Models.Course
+﻿@model ITHSCourseSchoolWEB.Models.DTO.Course.CreateCourseDTO
 
 <div class="container shadow p-5">
     <div class="row pb-2">
@@ -6,8 +6,10 @@
     </div>
 
     <form method="post" asp-action="EditCourse">
+       
+        <input hidden asp-for="Id" />
         <div asp-validation-summary="All"></div>
-         <input type="hidden" value ="@ViewBag.Id" name = "courseId"/>
+         
         <div class="form-row"> 
              
             <div class="form-group col-md-6">

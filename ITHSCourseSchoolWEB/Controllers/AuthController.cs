@@ -1,4 +1,5 @@
-﻿using ITHSCourseSchoolWEB.Models;
+﻿using ITHSCourse_Utility;
+using ITHSCourseSchoolWEB.Models;
 using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication;
@@ -64,7 +65,7 @@ namespace ITHSCourseSchoolWEB.Controllers
                 //TempData["user"] = obj.UserName; TempData.Keep("User");
              
                
-                HttpContext.Session.SetString(SDApi.SessionToken, model.Token);
+                HttpContext.Session.SetString(SD.SessionToken, model.Token);
                 return RedirectToAction("Index", "Home");
             }
 
@@ -104,7 +105,7 @@ namespace ITHSCourseSchoolWEB.Controllers
             await HttpContext.SignOutAsync();
             
             
-            HttpContext.Session.SetString(SDApi.SessionToken, "");
+            HttpContext.Session.SetString(SD.SessionToken, "");
             TempData.Remove("user");
 
             return RedirectToAction("Index", "Home");

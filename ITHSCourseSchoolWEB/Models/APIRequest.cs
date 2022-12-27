@@ -1,4 +1,5 @@
-﻿using static ITHSCourseSchoolWEB.SDApi;
+﻿using static ITHSCourse_Utility.SD;
+
 
 namespace ITHSCourseSchoolWEB.Models
 {

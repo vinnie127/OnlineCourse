@@ -3,26 +3,23 @@ using System.Linq.Expressions;
 
 namespace ITHSCourseSchool.Repository.IRepository
 {
-    public interface ICourseRepository
+    public interface ICourseRepository : IRepository<Course>
     {
 
-        Task<List<Course>> GetAllAsync(Expression<Func<Course, bool>> filter = null);
-        Task<Course> GetAsync(Expression<Func<Course,bool>> filter = null);
-        Task CreateAsync(Course entity);
-        Task RemoveAsync(Course entity);
-        Task SaveAsync();
+        //public ICollection<Course> GetUsers(int courseId);
+        Task<Course> UpdateAsync(Course entity);
 
 
-        ICollection<Course> GetCourses();
-        Course GetCourseById(int courseId);
-        Course GetCourseByTitle(string courseTitle);
-        bool CreateCourse(Course courseId);
+        //ICollection<Course> GetCourses();
+        //Course GetCourseById(int courseId);
+        //Course GetCourseByTitle(string courseTitle);
+        //bool CreateCourse(Course courseId);
        
-        bool DeleteCourse(Course courseId);
-        bool UpdateCourse(Course course);
-        public ICollection<Course> GetUsers(int courseId);
+        //bool DeleteCourse(Course courseId);
+        //bool UpdateCourse(Course course);
+    
 
-        bool Save();
+        //bool Save();
 
 
 

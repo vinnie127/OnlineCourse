@@ -1,23 +1,23 @@
-﻿namespace ITHSCourseSchoolWEB
-{
-    public class SDApi
-    {
+﻿//namespace ITHSCourseSchoolWEB
+//{
+//    //public class SDApi
+//    //{
 
-        public enum ApiType
-        {
-            GET,
-            POST,
-            PATCH,
-            DELETE,
-            PUT
-        }
-
-
-        public static string SessionToken = "JWTToken";
+//    //    public enum ApiType
+//    //    {
+//    //        GET,
+//    //        POST,
+//    //        PATCH,
+//    //        DELETE,
+//    //        PUT
+//    //    }
 
 
+//    //    public static string SessionToken = "JWTToken";
 
 
 
-    }
-}
+
+
+//    //}
+//}
