@@ -33,6 +33,10 @@ namespace ITHSCourseSchoolWEB.Models.Repository
                 }
                 switch (apiRequest.ApiType)
                 {
+                    case SD.ApiType.GET:
+                        message.Method = HttpMethod.Get;
+                        break;
+
                     case SD.ApiType.POST:
                         message.Method = HttpMethod.Post;
                         break;

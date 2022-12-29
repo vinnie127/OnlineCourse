@@ -61,7 +61,7 @@ namespace ITHSCourseSchoolWEB.Controllers
                 var response = await _cRepo.CreateAsync<APIResponse>(model, await HttpContext.GetTokenAsync("access_token"));
                 if (response != null && response.IsSuccess)
                 {
-                    TempData["success"] = "Villa created successfully";
+                    TempData["success"] = "Course created successfully";
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -83,16 +83,16 @@ namespace ITHSCourseSchoolWEB.Controllers
             {
 
                 Course model = JsonConvert.DeserializeObject<Course>(Convert.ToString(response.Result));
-                return View(_mapper.Map<CreateCourseDTO>(model));
+                return View(_mapper.Map<EditCourseDTO>(model));
             }
             return NotFound();
 
         }
 
         //[Authorize(Roles = "admin")]
-        [HttpPatch]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCourse(CreateCourseDTO course)
+        public async Task<IActionResult> EditCourse(EditCourseDTO course)
         {
 
 
@@ -108,19 +108,20 @@ namespace ITHSCourseSchoolWEB.Controllers
             TempData["error"] = "Error encountered.";
             return View(course);
 
-
-
-
         }
                
+        
         public async Task<IActionResult> Delete(int id)
         {
+            
 
-            var response = await _cRepo.GetAsync<APIResponse>(id, await HttpContext.GetTokenAsync("access_token"));
+
+
+            var response = await _cRepo.DeleteAsync<APIResponse>(id, await HttpContext.GetTokenAsync("access_token"));
             if (response != null && response.IsSuccess)
             {
                 CreateCourseDTO model = JsonConvert.DeserializeObject<CreateCourseDTO>(Convert.ToString(response.Result));
-                return View(model);
+                return RedirectToAction(nameof(Index));
             }
             return NotFound();
 

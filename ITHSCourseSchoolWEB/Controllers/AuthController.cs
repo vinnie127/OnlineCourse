@@ -26,10 +26,11 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         }
 
-     
-        //[Authorize]
+
+
         [HttpGet]
-        public async Task<IActionResult> Login()
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginUser()
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             return RedirectToAction(nameof(Index), "Home");
@@ -44,7 +45,7 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginRequestDTO obj)
+        public async Task<IActionResult> LoginUser(LoginRequestDTO obj)
         {
 
             APIResponse response = await _authService.LoginAsync<APIResponse>(obj);
@@ -62,9 +63,9 @@ namespace ITHSCourseSchoolWEB.Controllers
                 var principal = new ClaimsPrincipal(identity);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                //TempData["user"] = obj.UserName; TempData.Keep("User");
-             
-               
+                TempData["user"] = obj.UserName; TempData.Keep("User");
+
+
                 HttpContext.Session.SetString(SD.SessionToken, model.Token);
                 return RedirectToAction("Index", "Home");
             }
@@ -93,7 +94,7 @@ namespace ITHSCourseSchoolWEB.Controllers
             if (result !=null && result.IsSuccess)
             {
 
-                return RedirectToAction("Login");
+                return RedirectToAction("LoginUser");
 
             }
 

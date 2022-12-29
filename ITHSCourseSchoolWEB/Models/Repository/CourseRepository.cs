@@ -28,7 +28,7 @@ namespace ITHSCourseSchoolWEB.Models.Repository
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = courseUrl +"/api/Course",
+                Url = courseUrl +"/api/Course/CreateCourse",
                 Token = token
             });
         }
@@ -38,7 +38,7 @@ namespace ITHSCourseSchoolWEB.Models.Repository
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = courseUrl +"/api/Course" + id,
+                Url = courseUrl +"/api/Course/" + id,
                 Token = token
             });
         }
@@ -65,13 +65,13 @@ namespace ITHSCourseSchoolWEB.Models.Repository
 
         }
 
-        public Task<T> UpdateAsync<T>(CreateCourseDTO dto, string token)
+        public Task<T> UpdateAsync<T>(EditCourseDTO dto, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SD.ApiType.PUT,
+                ApiType = SD.ApiType.PATCH,
                 Data = dto,
-                Url = courseUrl +"/api/Course" + dto.Id,
+                Url = courseUrl +"/api/Course/" + dto.Id,
                 Token = token
             });
         }

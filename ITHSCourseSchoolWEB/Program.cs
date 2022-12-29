@@ -17,43 +17,46 @@ builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddAuthentication
+    (options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        //options.DefaultChallengeScheme = "oidc";
+    })
+              .AddCookie(options =>
+              {
+                  options.Cookie.HttpOnly = true;
+              options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                  options.LoginPath = "/Auth/LoginUser";
+                  options.AccessDeniedPath = "/Auth/AccessDenied";
+                  options.SlidingExpiration = true;
+              });
+//.AddOpenIdConnect("oidc", options => {
+//options.Authority = builder.Configuration["ServiceUrls:IdentityAPI"];
+//options.GetClaimsFromUserInfoEndpoint = true;
+//options.ClientId = "magic";
+//options.ClientSecret = "secret";
+//options.ResponseType = "code";
+
+//options.TokenValidationParameters.NameClaimType = "name";
+//options.TokenValidationParameters.RoleClaimType = "role";
+//options.Scope.Add("magic");
+//options.SaveTokens = true;
+
+//options.ClaimActions.MapJsonKey("role", "role");
+//options.LoginPath = "/Auth/LoginUser";
+//});
+
+
+
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(100);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
-
-builder.Services.AddAuthentication
-    (options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = "oidc";
-    })
-              .AddCookie(options =>
-              {
-                  options.Cookie.HttpOnly = true;
-                  options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                  options.LoginPath = "/Auth/Login";
-                  options.AccessDeniedPath = "/Auth/AccessDenied";
-                  options.SlidingExpiration = true;
-              })
-              .AddOpenIdConnect("oidc", options => {
-              options.Authority = builder.Configuration["ServiceUrls:IdentityAPI"];
-              options.GetClaimsFromUserInfoEndpoint = true;
-              options.ClientId = "magic";
-              options.ClientSecret = "secret";
-              options.ResponseType = "code";
-
-              options.TokenValidationParameters.NameClaimType = "name";
-              options.TokenValidationParameters.RoleClaimType = "role";
-              options.Scope.Add("magic");
-              options.SaveTokens = true;
-
-              options.ClaimActions.MapJsonKey("role", "role");
-
-              });
 
 var app = builder.Build();
 

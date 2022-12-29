@@ -30,6 +30,7 @@ namespace ITHSCourseSchool.Controllers
 
 
         [HttpGet("Courses")]
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(List<ViewCourseDetailsDTO>))]
         public async Task<ActionResult<APIResponse>> GetCourses()
         {
@@ -60,6 +61,7 @@ namespace ITHSCourseSchool.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "student")]
         public async Task<ActionResult<APIResponse>> CreateCourse([FromBody] RegisterCourseDTO course)
         {
             try
@@ -231,7 +233,7 @@ namespace ITHSCourseSchool.Controllers
         [HttpPatch("{courseId:int}", Name = "UpdateCourse")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateCourse(int courseId, [FromBody] RegisterCourseDTO coursemodel)
+        public async Task<ActionResult<APIResponse>> UpdateCourse(int courseId, [FromBody] EditCourseDTO coursemodel)
         {
 
             try

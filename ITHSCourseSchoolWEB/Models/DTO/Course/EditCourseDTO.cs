@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ITHSCourseSchool.Models.DTO.Course
+namespace ITHSCourseSchoolWEB.Models.DTO.Course
 {
-    public class RegisterCourseDTO
+    public class EditCourseDTO
     {
 
 
-        //public int Id { get; set; }
+
+        [Key]
+        public int Id { get; set; }
         [Required]
         public string CourseTitle { get; set; }
 

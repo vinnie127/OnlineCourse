@@ -2,11 +2,11 @@
 
 namespace ITHSCourseSchool.Models.DTO.Course
 {
-    public class RegisterCourseDTO
+    public class EditCourseDTO
     {
 
 
-        //public int Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string CourseTitle { get; set; }
 
