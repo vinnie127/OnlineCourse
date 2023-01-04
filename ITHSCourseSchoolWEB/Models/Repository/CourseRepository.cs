@@ -58,7 +58,7 @@ namespace ITHSCourseSchoolWEB.Models.Repository
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = courseUrl +"/api/Course/" + Id,
+                Url = courseUrl +"/api/Course/GetCourse/" + Id,
                 Token = token
             });
 
@@ -77,22 +77,30 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         }
 
 
-        public async Task<IEnumerable<ListUserDTO>> GetStudents(string url, int id)
+        public Task<T>  GetStudents<T>(int id, string token)
         {
 
-            var request = new HttpRequestMessage(HttpMethod.Get, url + id);
-            var client = _clientFactory.CreateClient();
-
-            HttpResponseMessage response = await client.SendAsync(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            return SendAsync<T>(new APIRequest()
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
+                ApiType = SD.ApiType.GET,
+                Url = courseUrl + "/api/Course/GetUsers/" + id,
+                Token = token
+            });
 
-                return JsonConvert.DeserializeObject<IEnumerable<ListUserDTO>>(jsonString);
 
-            }
+            //var request = new HttpRequestMessage(HttpMethod.Get, url + id);
+            //var client = _clientFactory.CreateClient();
 
-            return null;
+            //HttpResponseMessage response = await client.SendAsync(request);
+            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //{
+            //    var jsonString = await response.Content.ReadAsStringAsync();
+
+            //    return JsonConvert.DeserializeObject<IEnumerable<ListUserDTO>>(jsonString);
+
+            //}
+
+            //return null;
 
 
 

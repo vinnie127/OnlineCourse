@@ -10,6 +10,6 @@ namespace ITHSCourseSchoolWEB.Models.Repository.IRepository
         Task<T> CreateAsync<T>(CreateCourseDTO dto, string token);
         Task<T> UpdateAsync<T>(EditCourseDTO dto, string token);
         Task<T> DeleteAsync<T>(int id, string token);
-        public Task<IEnumerable<ListUserDTO>> GetStudents(string url, int id);
+        public Task<T> GetStudents<T>(int id, string token);
     }
 }

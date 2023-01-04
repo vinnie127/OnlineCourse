@@ -215,7 +215,7 @@ namespace ITHSCourseSchool.Repository
         public bool AddCourse(string userName, int courseId)
         {
             var userObj = GetUser(userName);
-            var CourseObj = _db.Course.FirstOrDefault(a=>a.Id == courseId);
+            Course CourseObj = _db.Course.FirstOrDefault(a=>a.Id == courseId);
             userObj.Courses.Add(CourseObj);
 
             return Save();

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ITHSCourseSchoolWEB.Models.DTO.User;
+using System.ComponentModel.DataAnnotations;
 
 namespace ITHSCourseSchoolWEB.Models.DTO.Course
 {
@@ -6,6 +7,6 @@ namespace ITHSCourseSchoolWEB.Models.DTO.Course
     {
         public int Id { get; set; }
         public string CourseTitle { get; set; }
-        public ICollection<LocalUser>? Users { get; set; } = new List<LocalUser>();
+        public ICollection<UserDTO>? Users { get; set; } = new List<UserDTO>();
     }
 }

@@ -2,6 +2,7 @@
 using ITHSCourse_Utility;
 using ITHSCourseSchoolWEB.Models;
 using ITHSCourseSchoolWEB.Models.DTO.Course;
+using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -35,7 +36,8 @@ namespace ITHSCourseSchoolWEB.Controllers
             return View(list);
         }
 
-        //[Authorize(Roles = "admin")]
+
+       [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCourse()
         {
 
@@ -47,8 +49,7 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         }
 
-
-        //[Authorize(Roles = "admin")]
+  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCourse(CreateCourseDTO model)
@@ -58,7 +59,7 @@ namespace ITHSCourseSchoolWEB.Controllers
             if (ModelState.IsValid)
             {
 
-                var response = await _cRepo.CreateAsync<APIResponse>(model, await HttpContext.GetTokenAsync("access_token"));
+                var response = await _cRepo.CreateAsync<APIResponse>(model, await HttpContext.GetTokenAsync(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     TempData["success"] = "Course created successfully";
@@ -72,13 +73,13 @@ namespace ITHSCourseSchoolWEB.Controllers
         }
 
 
-        //[Authorize(Roles = "admin")]
+        
         public async Task<IActionResult> EditCourse(int id)
         {
 
           ViewBag.CourseId = id;
 
-            var response = await _cRepo.GetAsync<APIResponse>(id, await HttpContext.GetTokenAsync("access_token"));
+            var response = await _cRepo.GetAsync<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
 
@@ -99,7 +100,7 @@ namespace ITHSCourseSchoolWEB.Controllers
             if (ModelState.IsValid)
             {
                 TempData["success"] = "Villa updated successfully";
-                var response = await _cRepo.UpdateAsync<APIResponse>(course, await HttpContext.GetTokenAsync("access_token"));
+                var response = await _cRepo.UpdateAsync<APIResponse>(course, await HttpContext.GetTokenAsync(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(Index));
@@ -117,7 +118,7 @@ namespace ITHSCourseSchoolWEB.Controllers
 
 
 
-            var response = await _cRepo.DeleteAsync<APIResponse>(id, await HttpContext.GetTokenAsync("access_token"));
+            var response = await _cRepo.DeleteAsync<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 CreateCourseDTO model = JsonConvert.DeserializeObject<CreateCourseDTO>(Convert.ToString(response.Result));
@@ -127,22 +128,60 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         }
 
-        //public async Task<IActionResult> ListOfUsersInCourse(int id)
-        //{
+        public async Task<IActionResult> ListOfUsersInCourse(int id)
+        {
+            
+
+            var response = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
+            
+            
+            
+           
+                //list = JsonConvert.DeserializeObject<List<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
+               var result =  JsonConvert.DeserializeObject<IEnumerable<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
+                var resultJson = Json(new { data = result.FirstOrDefault()?.Users });
+
+            
+
+            return resultJson;
+
+            //var response = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
 
 
-        //    var result = await _cRepo.GetStudents(SD.StudentsInCourseAPI, id);
+            ////if (response != null && response.IsSuccess)
+            ////{
 
-        //    var resultJson = Json(new { data = result.FirstOrDefault()?.Users });
+            //    var modelToShow = JsonConvert.DeserializeObject<ViewCourseDetailsDTO>(Convert.ToString(response.Result));
 
-        //    return resultJson;
+            //    var resultJson = Json(new { data = modelToShow.Users });
+
+            //     return resultJson;
 
 
-        //}
+
+
+            ////return View(modelToShow);
+            ////}
+            ////return NotFound();
+
+
+            ////var result = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
+
+            //////ViewCourseDetailsDTO model = _mapper.Map<ViewCourseDetailsDTO>(result);
+
+            ////ViewCourseDetailsDTO model = JsonConvert.DeserializeObject<ViewCourseDetailsDTO>(Convert.ToString(result.Result));
+
+            //////var resultJson = Json(new { data = model.FirstOrDefault()?.Users });
+            ////var resultJson = Json(new { data = model.Users });
+
+            ////return resultJson;
+
+
+        }
 
         public async Task<IActionResult> StudentList(int id)
         {
-            var StudentList = new ListUserDTO();
+            var StudentList = new ViewCourseDetailsDTO();
             ViewBag.Id = id;
             return View(StudentList);
         }

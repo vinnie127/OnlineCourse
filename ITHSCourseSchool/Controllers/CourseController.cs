@@ -29,8 +29,8 @@ namespace ITHSCourseSchool.Controllers
         }
 
 
-        [HttpGet("Courses")]
-        [Authorize]
+        [HttpGet/*("Courses")*/]
+        [Route("Courses")]
         [ProducesResponseType(200, Type = typeof(List<ViewCourseDetailsDTO>))]
         public async Task<ActionResult<APIResponse>> GetCourses()
         {
@@ -48,10 +48,10 @@ namespace ITHSCourseSchool.Controllers
                 _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
 
-            return _response; 
+            return _response;
 
 
-            
+
         }
 
 
@@ -61,7 +61,6 @@ namespace ITHSCourseSchool.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize(Roles = "student")]
         public async Task<ActionResult<APIResponse>> CreateCourse([FromBody] RegisterCourseDTO course)
         {
             try
@@ -93,7 +92,7 @@ namespace ITHSCourseSchool.Controllers
                 _response.Result = _mapper.Map<ViewCourseDetailsDTO>(courseObj);
                 _response.StatusCode = HttpStatusCode.Created;
 
-                return CreatedAtRoute("GetCourse", new { CourseId = courseObj.Id }, courseObj);
+                return CreatedAtRoute("GetCourse", new { courseId = courseObj.Id }, _response);
 
             }
 
@@ -114,7 +113,7 @@ namespace ITHSCourseSchool.Controllers
         //{
 
         //    var objList = _courseRepo.GetUsers(id);
-           
+
         //    if (objList == null)
         //    {
         //        return NotFound();
@@ -126,14 +125,13 @@ namespace ITHSCourseSchool.Controllers
         //    {
 
         //        objToShow.Add(_mapper.Map<ViewCourseDetailsDTO>(obj));
-                
+
         //    }
-     
+
         //    return Ok(objToShow);
 
         //}
-
-        [HttpGet("{courseId:int}", Name = "GetCourse")]
+        [HttpGet("[action]/{courseId:int}")]
         [ProducesResponseType(200, Type = typeof(ViewCourseDetailsDTO))]
         public async Task<ActionResult<APIResponse>> GetCourse(int courseId)
         {
@@ -266,6 +264,115 @@ namespace ITHSCourseSchool.Controllers
             }
 
             return _response;
+
+        }
+
+
+
+
+
+        //[Route("GetUsers")]
+        [HttpGet("[action]/{id:int}")]
+        [ProducesResponseType(200, Type = typeof(ViewCourseDetailsDTO))]
+        public async Task<ActionResult<APIResponse>> GetUsers(int id)
+        {
+
+            try
+            {
+
+
+                if (id == 0)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+
+                    return BadRequest(_response);
+                }
+
+
+                var objList =   _courseRepo.GetUsers(id);
+
+                if (objList == null)
+                {
+                    return NotFound();
+                }
+
+
+                var objDto = new List<ViewCourseDetailsDTO>();
+
+
+                foreach (var obj in objList)
+                    {
+                      objDto.Add(_mapper.Map<ViewCourseDetailsDTO>(obj));
+                    }
+
+                 
+
+                _response.Result = objDto;
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+
+                //if (id == 0)
+                //{
+                //    _response.StatusCode = HttpStatusCode.BadRequest;
+
+                //    return BadRequest(_response);
+                //}
+
+
+                //var objList = _courseRepo.GetUsers(id);
+
+                //if (objList == null)
+                //{
+                //    return NotFound();
+                //}
+
+                //var objDto = new List<ViewCourseDetailsDTO>();
+
+                //foreach (var obj in objList)
+                //{
+                //    objDto.Add(_mapper.Map<ViewCourseDetailsDTO>(obj));
+                //}
+
+                ////var objCourse = await _courseRepo.GetUsers(id);
+
+
+                ////_response.Result = _mapper.Map<ViewCourseDetailsDTO>(objDto);
+                //_response.Result = objDto;
+                //_response.StatusCode = HttpStatusCode.OK;
+                //return Ok(_response);
+
+
+            }
+
+
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+
+            return _response;
+
+
+
+
+            //var objList = _courseRepo.GetUsers(id);
+
+            //if (objList == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var objToShow = new List<ViewCourseDetailsDTO>();
+
+            //foreach (var obj in objList)
+            //{
+
+            //    objToShow.Add(_mapper.Map<ViewCourseDetailsDTO>(obj));
+
+            //}
+
+            //return Ok(objToShow);
 
         }
 

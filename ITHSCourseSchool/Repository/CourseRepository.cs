@@ -12,22 +12,38 @@ namespace ITHSCourseSchool.Repository
 
 
         private readonly ApplicationDbContext _db;
-
+        internal DbSet<Course> dbSet;
 
         //test
         public CourseRepository(ApplicationDbContext db) :base(db)
         {
 
             _db = db;
-
+            this.dbSet = _db.Set<Course>();
 
 
         }
-        public ICollection<Course> GetUsers(int courseId)
+       
+            //public async Task<Course> GetUsers(Expression<Func<Course, bool>>? filter = null)
+            //{
+            //    IQueryable<Course> query = dbSet;
+            //    if (filter != null)
+            //    {
+            //        query = query.Where(filter);
+            //    }
+
+            //    return await query.FirstOrDefaultAsync();
+            //}
+
+
+        public   ICollection<Course> GetUsers(int courseId)
         {
-            return _db.Course.Where(c => c.Id == courseId).Include(a => a.Users).ToList();
+           
+            return  _db.Course.Where(c => c.Id == courseId).Include(c => c.Users).ToList();
 
         }
+
+
 
 
         public async Task<Course> UpdateAsync(Course entity)

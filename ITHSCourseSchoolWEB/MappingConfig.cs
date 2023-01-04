@@ -13,6 +13,8 @@ namespace ITHSCourseSchoolWEB
             CreateMap<CreateCourseDTO, Course>().ReverseMap();
             CreateMap<ListUserDTO, Course>().ReverseMap();
             CreateMap<Course, EditCourseDTO>().ReverseMap();
+            CreateMap<Course, ViewCourseDetailsDTO>().ReverseMap();
+
 
         }
 
