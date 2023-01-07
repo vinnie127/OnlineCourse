@@ -172,6 +172,30 @@ namespace ITHSCourseSchoolWEB.Controllers
             return View();
         }
 
+
+     
+        public async Task<IActionResult> AddCourse(int id)
+        {
+
+                CourseToAdd courseToAdd = new CourseToAdd();
+            
+                courseToAdd.CourseId = id;
+
+
+            string userName = User.FindFirstValue(ClaimTypes.Name);
+
+            courseToAdd.userName = userName;
+
+            var response = await _authService.AddCourseAsync<APIResponse>(courseToAdd/*, await HttpContext.GetTokenAsync(SD.SessionToken)*/);
+            if (response != null && response.IsSuccess)
+            {
+            CourseToAdd model = JsonConvert.DeserializeObject<CourseToAdd>(Convert.ToString(response.Result));
+                //return RedirectToAction("Courses", "Index");
+                return RedirectToAction("LoggaIn");
+            }
+            return NotFound();
+
+        }
        
 
 

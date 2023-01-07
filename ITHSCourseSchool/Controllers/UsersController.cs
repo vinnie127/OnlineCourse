@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ITHSCourseSchool.Data;
 using ITHSCourseSchool.Models;
 using ITHSCourseSchool.Models.DTO.User;
 using ITHSCourseSchool.Repository.IRepository;
@@ -19,14 +20,16 @@ namespace ITHSCourseSchool.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private string secretKey;
+        private readonly ApplicationDbContext _db;
 
-        public UsersController(IUserRepository userRepo, IMapper mapper, IConfiguration configuration, UserManager<ApplicationUser> userManager)
+        public UsersController(IUserRepository userRepo, IMapper mapper, IConfiguration configuration, UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
             _userManager = userManager;
             _userRepo = userRepo;
             this._response = new();
             _mapper = mapper;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
+            _db = db;
 
         }
 
@@ -119,23 +122,112 @@ namespace ITHSCourseSchool.Controllers
 
 
         }
+     
+
 
         [HttpPost("addCourse")]
-        public IActionResult AddCourse(string userName, int CourseId)
+        public  async Task<ActionResult<APIResponse>> AddCourse( [FromBody] CourseToAddDTO model)
         {
 
-            if (userName == null || CourseId == null)
+            try
             {
-                return BadRequest();
+
+                CourseToAddDTO addCourse = new CourseToAddDTO();
+
+                if (model.UserId == null || model.CourseId == null)
+                {
+                    ModelState.AddModelError("", $"Something went wrong when adding the record {model.CourseId}");
+                    return StatusCode(500, ModelState);
+                }
+
+
+
+                addCourse.UserId = model.UserId;
+                addCourse.CourseId = model.CourseId;
+
+               await _userRepo.AddCourse(addCourse);
+
+                if (addCourse == null)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Error while adding course");
+                    return BadRequest(_response);
+                }
+
+
+                return (_response);
+
+            }
+
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
 
 
-            var userObj = _userRepo.AddCourse(userName, CourseId);
 
-            return Ok();
+            //try
+            //{
 
 
+            //    var user =  _userRepo.AddCourse(model);
+
+
+            //    if (user == null)
+            //    {
+
+            //        ModelState.AddModelError("", $"Something went wrong when adding the course for user {model.UserId}");
+            //        return StatusCode(500, ModelState);
+
+
+            //    }
+
+
+            //    _response.StatusCode = HttpStatusCode.NoContent;
+            //    _response.IsSuccess = true;
+
+            //    return Ok(_response);
+
+            //}
+
+            //catch (Exception ex)
+            //{
+            //    _response.IsSuccess = false;
+            //    _response.ErrorMessages = new List<string>() { ex.ToString() };
+            //}
+
+            //return _response;
+
+
+            //if (model.UserId == null || model.CourseId == null)
+            //{
+            //    _response.StatusCode = HttpStatusCode.BadRequest;
+            //    _response.IsSuccess = false;
+            //    _response.ErrorMessages.Add("Du är redan med i kursen");
+
+
+            //    return BadRequest(_response);
+            //}
+
+
+
+            //var userObj = _userRepo.AddCourse(model);
+
+
+            //_response.StatusCode = HttpStatusCode.OK;
+            //_response.IsSuccess = true;
+            //_response.Result = userObj;
+
+            //return Ok(_response);
+
+            return (_response);
         }
+
+
+
+        
 
 
 

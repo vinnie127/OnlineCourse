@@ -1,5 +1,6 @@
 ﻿using ITHSCourse_Utility;
 using ITHSCourseSchoolWEB.Models.DTO.Course;
+using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 using Newtonsoft.Json;
 
@@ -88,26 +89,23 @@ namespace ITHSCourseSchoolWEB.Models.Repository
             });
 
 
-            //var request = new HttpRequestMessage(HttpMethod.Get, url + id);
-            //var client = _clientFactory.CreateClient();
-
-            //HttpResponseMessage response = await client.SendAsync(request);
-            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            //{
-            //    var jsonString = await response.Content.ReadAsStringAsync();
-
-            //    return JsonConvert.DeserializeObject<IEnumerable<ListUserDTO>>(jsonString);
-
-            //}
-
-            //return null;
-
-
-
-
-
-
         }
+
+
+        public Task<T> AddCourseAsync<T>(CourseToAdd obj, string token)
+        {
+
+
+
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = courseUrl + "/api/Users/addCourse",
+                Token = token
+            });
+        }
+
 
     }
 

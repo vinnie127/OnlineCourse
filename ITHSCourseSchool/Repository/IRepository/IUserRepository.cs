@@ -12,7 +12,8 @@ namespace ITHSCourseSchool.Repository.IRepository
         //Vi returnerar user
         Task<UserModelDTO> Register(RegistrationRequestDTO registerationRequestDTO);
         public ICollection<ApplicationUser> GetCourses(string studentId);
-        public bool AddCourse(string userName, int courseId);
+        //public bool AddCourse(CourseToAddDTO model);
+        public  Task<ApplicationUser> AddCourse(CourseToAddDTO model);
         public ICollection<ApplicationUser> GetUsers();
         public bool Save();
         //public ICollection<LocalUser> GetStudents();

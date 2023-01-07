@@ -4,10 +4,13 @@ using ITHSCourseSchoolWEB.Models;
 using ITHSCourseSchoolWEB.Models.DTO.Course;
 using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
+
 
 namespace ITHSCourseSchoolWEB.Controllers
 {
@@ -16,7 +19,7 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         private readonly ICourseRepository _cRepo;
         private readonly IMapper _mapper;
-
+     
 
         public CoursesController(ICourseRepository cRepo, IMapper mapper)
         {
@@ -114,10 +117,6 @@ namespace ITHSCourseSchoolWEB.Controllers
         
         public async Task<IActionResult> Delete(int id)
         {
-            
-
-
-
             var response = await _cRepo.DeleteAsync<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
@@ -130,53 +129,11 @@ namespace ITHSCourseSchoolWEB.Controllers
 
         public async Task<IActionResult> ListOfUsersInCourse(int id)
         {
-            
-
             var response = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
-            
-            
-            
-           
-                //list = JsonConvert.DeserializeObject<List<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
-               var result =  JsonConvert.DeserializeObject<IEnumerable<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
-                var resultJson = Json(new { data = result.FirstOrDefault()?.Users });
-
-            
+            var result =  JsonConvert.DeserializeObject<IEnumerable<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
+            var resultJson = Json(new { data = result.FirstOrDefault()?.Users });
 
             return resultJson;
-
-            //var response = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
-
-
-            ////if (response != null && response.IsSuccess)
-            ////{
-
-            //    var modelToShow = JsonConvert.DeserializeObject<ViewCourseDetailsDTO>(Convert.ToString(response.Result));
-
-            //    var resultJson = Json(new { data = modelToShow.Users });
-
-            //     return resultJson;
-
-
-
-
-            ////return View(modelToShow);
-            ////}
-            ////return NotFound();
-
-
-            ////var result = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
-
-            //////ViewCourseDetailsDTO model = _mapper.Map<ViewCourseDetailsDTO>(result);
-
-            ////ViewCourseDetailsDTO model = JsonConvert.DeserializeObject<ViewCourseDetailsDTO>(Convert.ToString(result.Result));
-
-            //////var resultJson = Json(new { data = model.FirstOrDefault()?.Users });
-            ////var resultJson = Json(new { data = model.Users });
-
-            ////return resultJson;
-
-
         }
 
         public async Task<IActionResult> StudentList(int id)
@@ -186,8 +143,31 @@ namespace ITHSCourseSchoolWEB.Controllers
             return View(StudentList);
         }
 
+       
+        public async Task<IActionResult> AddCourse(int id)
+        {
 
+            CourseToAdd courseToAdd = new CourseToAdd();
 
+            courseToAdd.CourseId = id;
+            
+
+            //string userName = User.FindFirstValue(ClaimTypes.Name);
+          
+
+           string UserName =  User.FindFirstValue(ClaimTypes.Name);
+            courseToAdd.userName = UserName;
+
+            var response = await _cRepo.AddCourseAsync<APIResponse>(courseToAdd, await HttpContext.GetTokenAsync(SD.SessionToken));
+            if (response.IsSuccess)
+            {
+                CourseToAdd model = JsonConvert.DeserializeObject<CourseToAdd>(Convert.ToString(response.Result));
+                //return RedirectToAction("Courses", "Index");
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
+
+        }
 
 
 

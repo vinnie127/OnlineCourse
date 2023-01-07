@@ -42,13 +42,16 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         }
 
 
-        public Task<T> AddCourseAsync<T>(CourseToAdd obj)
+        public Task<T> AddCourseAsync<T>(CourseToAdd obj/*, string token*/)
         {
+
+
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + "/api/Users/addCourse"
+                Url = villaUrl + "/api/Users/addCourse",
+                //Token = token
             });
         }
 

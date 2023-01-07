@@ -1,4 +1,5 @@
 ﻿using ITHSCourseSchoolWEB.Models.DTO.Course;
+using ITHSCourseSchoolWEB.Models.DTO.User;
 
 namespace ITHSCourseSchoolWEB.Models.Repository.IRepository
 {
@@ -11,5 +12,6 @@ namespace ITHSCourseSchoolWEB.Models.Repository.IRepository
         Task<T> UpdateAsync<T>(EditCourseDTO dto, string token);
         Task<T> DeleteAsync<T>(int id, string token);
         public Task<T> GetStudents<T>(int id, string token);
+        public Task<T> AddCourseAsync<T>(CourseToAdd obj, string token);
     }
 }

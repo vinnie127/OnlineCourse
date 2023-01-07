@@ -43,7 +43,7 @@
 					<td>
 					<a asp-controller="Courses" asp-action="EditCourse" asp-route-id="@item.Id" class=" btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i>Edit</a>&nbsp;
 					<a asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id" class=" btn btn-sm btn-danger"><i class="bi bi-pencil-square"></i>Delete</a>&nbsp;
-					<a asp-controller="Auth" asp-action="JoinCourse" asp-route-id="@item.Id" class=" btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i>Join Course</a>&nbsp;
+					<a asp-controller="Courses" asp-action="AddCourse" asp-route-id="@item.Id" class=" btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i>Join Course</a>&nbsp;
 					<a asp-controller="Courses" asp-action="StudentList" asp-route-id="@item.Id" class=" btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i>Students</a>&nbsp;
 				</td>
 				</tr>

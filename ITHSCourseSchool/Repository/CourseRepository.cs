@@ -24,16 +24,7 @@ namespace ITHSCourseSchool.Repository
 
         }
        
-            //public async Task<Course> GetUsers(Expression<Func<Course, bool>>? filter = null)
-            //{
-            //    IQueryable<Course> query = dbSet;
-            //    if (filter != null)
-            //    {
-            //        query = query.Where(filter);
-            //    }
-
-            //    return await query.FirstOrDefaultAsync();
-            //}
+      
 
 
         public   ICollection<Course> GetUsers(int courseId)
@@ -55,72 +46,9 @@ namespace ITHSCourseSchool.Repository
 
 
 
-        //public bool UpdateCourse(Course course)
-        //{
-        //    _db.Course.Update(course);
-        //    return Save();
-
-        //}
-        //public bool CreateCourse(Course courseId)
-        //{
-
-        //    var SearchForCourse = GetCourseByTitle(courseId.CourseTitle);
-        //    if (SearchForCourse == null)
-        //    {
-
-        //        _db.Course.Add(courseId);
-
-        //        return Save();
-
-        //    }
-
-        //    else
-        //    {
-        //        return false;
-        //    }
 
 
 
-        //}
-        //public bool DeleteCourse(Course courseId)
-        //{
-
-        //    _db.Course.Remove(courseId);
-
-        //    return Save();
-
-
-        //}
-        //public Course GetCourseById(int courseId)
-        //{
-        //    return _db.Course.FirstOrDefault(a => a.Id == courseId);
-
-        //}
-        //public Course GetCourseByTitle(string courseTitle)
-        //{
-
-
-
-        // return _db.Course.FirstOrDefault(a=>a.CourseTitle == courseTitle);
-
-
-
-
-
-        //}
-
-
-        //public ICollection<Course> GetCourses()
-        //{
-
-        //    return _db.Course.OrderBy(a=>a.CourseTitle).ToList();
-
-
-        //}
-        //public bool Save()
-        //{
-        //    return _db.SaveChanges() >= 0 ? true : false;
-        //}
 
 
 
