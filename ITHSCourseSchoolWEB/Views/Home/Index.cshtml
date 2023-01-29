@@ -1,8 +1,25 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ITHSCourseSchoolWEB.Models.DTO.Course.ViewCourseDetailsDTO>    
+
+
+
+@{
+    ViewData["Title"] = "ITHS - Course";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h3 class="display-6">Welcome to online university!</h3>
+    <p>Below is a small list of available courses :)</p>
 </div>
+
+
+@foreach (var item in Model)
+{
+    <div>
+        <div class="card border-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header">Kursnummer:  @item.Id</div>
+            <div class="card-body">
+                <p class="card-text">Titel:  @item.CourseTitle</p>
+            </div>
+        </div>
+    </div>
+}

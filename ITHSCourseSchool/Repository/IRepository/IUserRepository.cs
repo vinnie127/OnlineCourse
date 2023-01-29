@@ -15,6 +15,7 @@ namespace ITHSCourseSchool.Repository.IRepository
         //public bool AddCourse(CourseToAddDTO model);
         public  Task<ApplicationUser> AddCourse(CourseToAddDTO model);
         public ICollection<ApplicationUser> GetUsers();
+        public  Task<ApplicationUser> RemoveCourse(CourseToAddDTO model);
         public bool Save();
         //public ICollection<LocalUser> GetStudents();
         //public ICollection<LocalUser> GetTeachers();

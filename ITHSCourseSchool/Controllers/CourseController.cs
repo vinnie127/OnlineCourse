@@ -91,8 +91,11 @@ namespace ITHSCourseSchool.Controllers
 
                 _response.Result = _mapper.Map<ViewCourseDetailsDTO>(courseObj);
                 _response.StatusCode = HttpStatusCode.Created;
+               
 
-                return CreatedAtRoute("GetCourse", new { courseId = courseObj.Id }, _response);
+                
+                //return CreatedAtRoute("GetCourse", new { courseId = courseObj.Id }, _response);
+                return _response;
 
             }
 

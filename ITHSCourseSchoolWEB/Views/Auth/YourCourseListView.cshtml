@@ -1,0 +1,34 @@
+﻿
+ <div style="background-color:#cde8e2" class="p-3 rounded">
+     <h1></h1>
+        <table id="tblData" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr class="table-danger">
+                    <th>Id</th>
+                    <th>CourseTitle</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+        </table>
+
+
+        <h1></h1>
+     </div>
+
+
+
+     
+@section Scripts{
+    <script src="~/js/CoursesTable.js"></script>
+     <script>
+        @{
+            var id = ViewBag.Id == null ? 0 : ViewBag.Id;
+        }
+        var idCourse = @id;
+        $(document).ready(function() {
+            loadDataTable(idCourse)
+        })
+    </script>
+}

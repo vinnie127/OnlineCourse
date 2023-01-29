@@ -1,7 +1,14 @@
 ﻿@model IEnumerable<ITHSCourseSchoolWEB.Models.DTO.Course.ViewCourseDetailsDTO>    
 
 
+	 @if(TempData["DangerMessage"] !=null)
+        {
+               <div class="alert alert-success">
 
+          <strong> </strong>@TempData["DangerMessage"]
+        </div>
+
+    }
 
 	<div class="row">
 		<div class="col-6">
@@ -28,7 +35,7 @@
 					<th>
 					courseEnd
 				</th>
-				<th>Edit / Delete / students</th>
+				<th>Edit / Delete / Join Course /  students</th>
 			</tr>
 		</thead>
 		<tbody>

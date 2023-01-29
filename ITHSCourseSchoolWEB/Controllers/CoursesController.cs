@@ -4,7 +4,6 @@ using ITHSCourseSchoolWEB.Models;
 using ITHSCourseSchoolWEB.Models.DTO.Course;
 using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +26,7 @@ namespace ITHSCourseSchoolWEB.Controllers
             _mapper = mapper;
         }
 
+
         public async Task<IActionResult> Index()
         {
             List<ViewCourseDetailsDTO> list = new();
@@ -36,6 +36,10 @@ namespace ITHSCourseSchoolWEB.Controllers
             {
                 list = JsonConvert.DeserializeObject<List<ViewCourseDetailsDTO>>(Convert.ToString(response.Result));
             }
+
+          
+
+
             return View(list);
         }
 
@@ -76,7 +80,7 @@ namespace ITHSCourseSchoolWEB.Controllers
         }
 
 
-        
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> EditCourse(int id)
         {
 
@@ -113,20 +117,28 @@ namespace ITHSCourseSchoolWEB.Controllers
             return View(course);
 
         }
-               
-        
+
+
+
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _cRepo.DeleteAsync<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 CreateCourseDTO model = JsonConvert.DeserializeObject<CreateCourseDTO>(Convert.ToString(response.Result));
+
+                TempData["DangerMessage"] = "Course is now deleted!";
+             
                 return RedirectToAction(nameof(Index));
             }
             return NotFound();
 
         }
 
+
+
+        
         public async Task<IActionResult> ListOfUsersInCourse(int id)
         {
             var response = await _cRepo.GetStudents<APIResponse>(id, await HttpContext.GetTokenAsync(SD.SessionToken));
@@ -136,6 +148,8 @@ namespace ITHSCourseSchoolWEB.Controllers
             return resultJson;
         }
 
+
+
         public async Task<IActionResult> StudentList(int id)
         {
             var StudentList = new ViewCourseDetailsDTO();
@@ -143,7 +157,10 @@ namespace ITHSCourseSchoolWEB.Controllers
             return View(StudentList);
         }
 
-       
+
+
+
+        [Authorize]
         public async Task<IActionResult> AddCourse(int id)
         {
 
@@ -152,20 +169,25 @@ namespace ITHSCourseSchoolWEB.Controllers
             courseToAdd.CourseId = id;
             
 
-            //string userName = User.FindFirstValue(ClaimTypes.Name);
-          
 
            string UserName =  User.FindFirstValue(ClaimTypes.Name);
-            courseToAdd.userName = UserName;
+            courseToAdd.UserId = UserName;
 
             var response = await _cRepo.AddCourseAsync<APIResponse>(courseToAdd, await HttpContext.GetTokenAsync(SD.SessionToken));
             if (response.IsSuccess)
             {
                 CourseToAdd model = JsonConvert.DeserializeObject<CourseToAdd>(Convert.ToString(response.Result));
                 //return RedirectToAction("Courses", "Index");
+                TempData["DangerMessage"] = "You joined the course!";
+
                 return RedirectToAction(nameof(Index));
             }
-            return NotFound();
+
+
+            TempData["DangerMessage"] = "You are already in the course";
+            return RedirectToAction(nameof(Index));
+
+
 
         }
 

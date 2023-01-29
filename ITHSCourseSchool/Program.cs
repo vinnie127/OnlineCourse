@@ -54,9 +54,20 @@ builder.Services.AddSwaggerGen(options =>
 
 });
 
+
+builder.Services.Configure<RouteOptions>(options =>
+ {
+  options.ConstraintMap.Add("string", typeof(StringRouteConstraint));
+ });
+
+
+
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+
+
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 

@@ -3,7 +3,7 @@
     public class CourseToAdd
     {
 
-        public string userName { get; set; }
+        public string UserId { get; set; }
         public int CourseId { get; set; }
 
 

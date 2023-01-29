@@ -16,6 +16,8 @@ namespace ITHSCourseSchool
             CreateMap<Course, ViewCourseDetailsDTO>().ReverseMap();
             CreateMap<Course, ViewCourse>().ReverseMap();
             CreateMap<Course, EditCourseDTO>().ReverseMap();
+            CreateMap<Course, CourseInfoClient>().ReverseMap();
+          
             //CreateMap<LocalUser, UserDTO>().ReverseMap();
             //CreateMap<LocalUser, LoginRequestDTO>().ReverseMap();
             //CreateMap<LocalUser, LoginResponseDTO>().ReverseMap();
@@ -27,6 +29,8 @@ namespace ITHSCourseSchool
             CreateMap<ApplicationUser, UserModelDTO>().ReverseMap();
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
             CreateMap<ApplicationUser, UserViewOnly>().ReverseMap();
+            CreateMap<ApplicationUser, CoursesInUser>().ReverseMap();
+            CreateMap<ApplicationUser, CoursesInUser>().ReverseMap();
         }
 
  

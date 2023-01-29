@@ -1,8 +1,8 @@
-﻿using ITHSCourseSchool.Models;
+﻿
+using ITHSCourseSchool.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
 
 namespace ITHSCourseSchool.Data
 {

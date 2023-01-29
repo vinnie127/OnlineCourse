@@ -1,4 +1,6 @@
-﻿namespace ITHSCourseSchoolWEB.Models
+﻿using ITHSCourseSchoolWEB.Models.DTO.User;
+
+namespace ITHSCourseSchoolWEB.Models
 {
     public class LocalUser
     {
@@ -8,7 +10,7 @@
         public string Password { get; set; }
 
         public string Role { get; set; }
-
+        //public RolesList Role { get; set; }
 
         public ICollection<Course>? Courses { get; set; } = new List<Course>();
 

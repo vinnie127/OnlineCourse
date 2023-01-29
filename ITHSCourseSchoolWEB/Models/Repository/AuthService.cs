@@ -42,18 +42,35 @@ namespace ITHSCourseSchoolWEB.Models.Repository
         }
 
 
-        public Task<T> AddCourseAsync<T>(CourseToAdd obj/*, string token*/)
+    
+
+        public Task<T> GetCoursesFromList<T>(string Id, string token)
         {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = villaUrl + "/api/Users/GetCourseFromID/" + Id,
+                Token = token
+            });
+
+
+        }
+
+
+        public Task<T> DeleteCourseAsync<T>(CourseToAdd obj, string token)
+        {
+
 
 
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + "/api/Users/addCourse",
-                //Token = token
+                Url = villaUrl + "/api/Users/removeCourse",
+                Token = token
             });
         }
+
 
 
 

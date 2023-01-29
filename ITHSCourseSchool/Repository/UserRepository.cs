@@ -64,22 +64,6 @@ namespace ITHSCourseSchool.Repository
 
         }
 
-        //public  ICollection<ApplicationUser> GetStudents()
-        //{
-
-        //    return _db.ApplicationUsers.OrderBy(a => a.Name).Where(a=>a.Role == "student").ToList();
-
-            
-
-        //}
-
-        //public ICollection<LocalUser> GetTeachers()
-        //{
-
-        //    return _db.LocalUsers.OrderBy(a => a.Name).Where(a => a.Role == "teacher").ToList();
-
-
-        //}
 
 
         //vi måste skapa en token för att validera user och skicka tillbaka 
@@ -208,12 +192,12 @@ namespace ITHSCourseSchool.Repository
         }
 
 
-        public ICollection<ApplicationUser> GetCourses(string userName)
+        public ICollection<ApplicationUser> GetCourses(string userId)
         {
 
 
 
-            return _db.ApplicationUsers.Where(c => c.UserName == userName).Include(a => a.Courses).ToList();
+            return _db.ApplicationUsers.Where(c => c.Id == userId).Include(a => a.Courses).ToList();
             
         }
 
@@ -223,7 +207,7 @@ namespace ITHSCourseSchool.Repository
         {
 
             
-            Course courseObj = _db.Course.FirstOrDefault(u => u.Id == model.CourseId);
+            Course courseObj =  _db.Course.FirstOrDefault(u => u.Id == model.CourseId);
 
             var userObj = GetUser(model.UserId);
 
@@ -244,56 +228,42 @@ namespace ITHSCourseSchool.Repository
             }
 
 
-            //var userObj = GetUser(model.UserId);
-
-            //Course CourseObj = _db.Course.FirstOrDefault(a=>a.Id == model.CourseId);
-            //userObj.Courses.Add(CourseObj);
-
-            //return Save();
 
         }
 
+        public async Task<ApplicationUser> RemoveCourse(CourseToAddDTO model)
+        {
 
 
+            Course courseObj = _db.Course.FirstOrDefault(u => u.Id == model.CourseId);
 
-        //public  bool AddCourse(CourseToAddDTO model)
-        //{
+            var userObj = GetCourses(model.UserId);
 
-
-
-        //    //var userToReturn =  _db.ApplicationUsers.FirstOrDefault(u => u.Id == model.UserId);
-
-        //    //var courseObj = _db.Course.FirstOrDefault(u=>u.Id == model.CourseId);
-
-        //    Course courseObj =  _db.Course.FirstOrDefault(u => u.Id == model.CourseId);
-
-        //    var userObj = GetUser(model.UserId);
+            var ObjToRemove = userObj.FirstOrDefault(a=>a.Id == model.UserId);
 
 
+            
 
-        //    if(courseObj.Id != null && userObj.Id != null)
-        //    {
+            if (courseObj.Id != null && ObjToRemove.Id != null)
+            {
+               
+                ObjToRemove.Courses.Remove(courseObj);
+                Save();
+                return ObjToRemove;
 
-        //        userObj.Courses.Add(courseObj);
+            }
 
-        //        return Save();
-
-        //    }
-
-        //    else
-        //    {
-        //        return false;
-        //    }
+            else
+            {
+                return null;
+            }
 
 
-        //    //var userObj = GetUser(model.UserId);
+           
+        }
 
-        //    //Course CourseObj = _db.Course.FirstOrDefault(a=>a.Id == model.CourseId);
-        //    //userObj.Courses.Add(CourseObj);
 
-        //    //return Save();
-
-        //}
+       
 
         public bool Save()
         {

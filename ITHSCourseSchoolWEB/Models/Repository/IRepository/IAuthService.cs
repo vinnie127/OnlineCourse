@@ -10,7 +10,10 @@ namespace ITHSCourseSchoolWEB.Models.Repository.IRepository
 
         Task<T> LoginAsync<T>(LoginRequestDTO objToCreate);
         Task<T> RegisterAsync<T>(RegistrationRequestDTO objToCreate);
-        Task<T> AddCourseAsync<T>(CourseToAdd obj/*, string token*/);
+     
+        public Task<T> GetCoursesFromList<T>(string Id, string token);
+        public Task<T> DeleteCourseAsync<T>(CourseToAdd obj, string token);
+
 
     }
 }

@@ -21,8 +21,21 @@
         <input asp-for="Name" type="text" class="form-control" placeholder="Name..." />
         </div>
         <div class="col-6 offset-3 pb-2">
-        <input asp-for="Role" type="text" class="form-control" placeholder="Role..." />
+        <label>Role</label>
+         @using(Html.BeginForm("Register", "Auth", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+            @Html.DropDownList("Roles", new List<SelectListItem>
+            {
+       new SelectListItem{ Text="admin", Value = "admin" },
+       new SelectListItem{ Text="student", Value = "student" },
+       new SelectListItem{ Text="teacher", Value = "teacher" }
+             }, "Select Time")
+
+              
+                }
         </div>
+
+
         <div class="col-6 offset-3 pb-2">
       <button type="submit" class="form-control btn-success" value="Submit">Register</button>
        </div>

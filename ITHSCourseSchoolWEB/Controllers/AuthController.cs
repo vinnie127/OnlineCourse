@@ -1,11 +1,13 @@
 ﻿using ITHSCourse_Utility;
 using ITHSCourseSchoolWEB.Models;
+using ITHSCourseSchoolWEB.Models.DTO.Course;
 using ITHSCourseSchoolWEB.Models.DTO.User;
 using ITHSCourseSchoolWEB.Models.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -25,6 +27,8 @@ namespace ITHSCourseSchoolWEB.Controllers
             _authService = authservice;
 
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> LoggaIn()
@@ -78,81 +82,46 @@ namespace ITHSCourseSchoolWEB.Controllers
 
 
 
-
-
-
-        //[HttpGet]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> LoginUser()
-        //{
-        //    var accessToken = await HttpContext.GetTokenAsync(SD.SessionToken);
-        //    return RedirectToAction(nameof(Index), "Home");
-
-        //    //LoginRequestDTO obj = new();
-        //    //return View(obj);
-
-
-
-        //}
-
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> LoginUser(LoginRequestDTO obj)
-        //{
-
-        //    APIResponse response = await _authService.LoginAsync<APIResponse>(obj);
-
-        //    if (response !=null && response.IsSuccess)
-        //    {
-        //        LoginResponseDTO model = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
-               
-        //        var handler = new JwtSecurityTokenHandler();
-        //        var jwt = handler.ReadJwtToken(model.Token);
-
-        //        var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-        //        identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "name").Value));
-        //        identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
-        //        var principal = new ClaimsPrincipal(identity);
-
-        //        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-        //        TempData["user"] = obj.UserName; TempData.Keep("User");
-
-
-        //        HttpContext.Session.SetString(SD.SessionToken, model.Token);
-        //        return RedirectToAction("Index", "Home");
-        //    }
-
-        //    else
-        //    {
-        //        ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
-        //        return View(obj);
-        //    }
-
-
-        //}
+        
 
         [HttpGet]
         public IActionResult Register()
         {
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "admin", Value = "0" });
+
+            items.Add(new SelectListItem { Text = "teacher", Value = "1" });
+
+            items.Add(new SelectListItem { Text = "student", Value = "2", Selected = true });
+
+            ViewBag.MovieType = items;
             return View();
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegistrationRequestDTO obj)
         {
 
+            obj.Role = Request.Form["Roles"].ToString();
+
             APIResponse result = await _authService.RegisterAsync<APIResponse>(obj);
             if (result !=null && result.IsSuccess)
             {
+
+                TempData["AlertMessage"] = "You are now registered!";
 
                 return RedirectToAction("LoggaIn");
 
             }
 
+           
             return View();
         }
+
+
 
         public async Task<IActionResult> Logout()
         {
@@ -173,35 +142,71 @@ namespace ITHSCourseSchoolWEB.Controllers
         }
 
 
-     
-        public async Task<IActionResult> AddCourse(int id)
+
+        [HttpGet]
+         public async Task<IActionResult> YourCourseList()
+        {
+            
+            
+            //List<CourseInfoDTO> list = new();
+            
+
+            string userId = User.FindFirstValue(ClaimTypes.Name);
+
+
+            var response = await _authService.GetCoursesFromList<APIResponse>(userId, await HttpContext.GetTokenAsync(SD.SessionToken));
+            
+              var list  = JsonConvert.DeserializeObject<IEnumerable<CoursesInUser>>(Convert.ToString(response.Result));
+            
+
+            
+            var resultJson = Json(new { data = list.FirstOrDefault()?.Courses });
+
+
+
+            return resultJson;
+
+
+        }
+
+
+        public async Task<IActionResult> YourCourseListView()
         {
 
-                CourseToAdd courseToAdd = new CourseToAdd();
+            var courseList = new CoursesInUser();
+           
+
             
-                courseToAdd.CourseId = id;
+          
+            return View(courseList);
+        }
 
 
-            string userName = User.FindFirstValue(ClaimTypes.Name);
 
-            courseToAdd.userName = userName;
+   
+        public async Task<IActionResult> DeleteCourseFromList(int id)
+        {
 
-            var response = await _authService.AddCourseAsync<APIResponse>(courseToAdd/*, await HttpContext.GetTokenAsync(SD.SessionToken)*/);
-            if (response != null && response.IsSuccess)
+            CourseToAdd courseToRemove = new CourseToAdd();
+
+            courseToRemove.CourseId = id;
+
+
+
+            string UserName = User.FindFirstValue(ClaimTypes.Name);
+            courseToRemove.UserId = UserName;
+
+            var response = await _authService.DeleteCourseAsync<APIResponse>(courseToRemove, await HttpContext.GetTokenAsync(SD.SessionToken));
+            if (response.IsSuccess)
             {
-            CourseToAdd model = JsonConvert.DeserializeObject<CourseToAdd>(Convert.ToString(response.Result));
+                CourseToAdd model = JsonConvert.DeserializeObject<CourseToAdd>(Convert.ToString(response.Result));
                 //return RedirectToAction("Courses", "Index");
-                return RedirectToAction("LoggaIn");
+                
+                return RedirectToAction("YourCourseListView", "Auth");
             }
             return NotFound();
 
         }
-       
-
-
-
-
-
 
 
     }

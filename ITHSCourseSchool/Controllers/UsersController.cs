@@ -108,21 +108,60 @@ namespace ITHSCourseSchool.Controllers
             }
 
 
-            var objToShow = new List<UserDTO>();
+            var objToShow = new List<CoursesInUser>();
 
             foreach (var obj in objList)
             {
 
-                objToShow.Add(_mapper.Map<UserDTO>(obj));
+                objToShow.Add(_mapper.Map<CoursesInUser>(obj));
 
             }
 
-            return Ok(objToShow);
+            return Ok();
 
 
 
         }
-     
+
+
+
+
+        [HttpGet("[action]/{id:string}")]
+        [ProducesResponseType(200)]
+        public IActionResult GetCourseFromID(string id)
+        {
+            var objList = _userRepo.GetCourses(id);
+
+
+
+            if (objList == null)
+            {
+
+                return NotFound();
+
+            }
+
+
+            var objToShow = new List<CoursesInUser>();
+
+            foreach (var obj in objList)
+            {
+
+                objToShow.Add(_mapper.Map<CoursesInUser>(obj));
+           
+
+            }
+
+
+           
+            _response.Result = objToShow;
+            _response.StatusCode = HttpStatusCode.OK;
+            return Ok(_response);
+
+
+
+        }
+
 
 
         [HttpPost("addCourse")]
@@ -168,66 +207,57 @@ namespace ITHSCourseSchool.Controllers
 
 
 
-            //try
-            //{
-
-
-            //    var user =  _userRepo.AddCourse(model);
-
-
-            //    if (user == null)
-            //    {
-
-            //        ModelState.AddModelError("", $"Something went wrong when adding the course for user {model.UserId}");
-            //        return StatusCode(500, ModelState);
-
-
-            //    }
-
-
-            //    _response.StatusCode = HttpStatusCode.NoContent;
-            //    _response.IsSuccess = true;
-
-            //    return Ok(_response);
-
-            //}
-
-            //catch (Exception ex)
-            //{
-            //    _response.IsSuccess = false;
-            //    _response.ErrorMessages = new List<string>() { ex.ToString() };
-            //}
-
-            //return _response;
-
-
-            //if (model.UserId == null || model.CourseId == null)
-            //{
-            //    _response.StatusCode = HttpStatusCode.BadRequest;
-            //    _response.IsSuccess = false;
-            //    _response.ErrorMessages.Add("Du är redan med i kursen");
-
-
-            //    return BadRequest(_response);
-            //}
-
-
-
-            //var userObj = _userRepo.AddCourse(model);
-
-
-            //_response.StatusCode = HttpStatusCode.OK;
-            //_response.IsSuccess = true;
-            //_response.Result = userObj;
-
-            //return Ok(_response);
-
             return (_response);
         }
 
 
+        [HttpPost("removeCourse")]
+        public async Task<ActionResult<APIResponse>> RemoveCourse([FromBody] CourseToAddDTO model)
+        {
 
-        
+            try
+            {
+
+                CourseToAddDTO addCourse = new CourseToAddDTO();
+
+                if (model.UserId == null || model.CourseId == null)
+                {
+                    ModelState.AddModelError("", $"Something went wrong when adding the record {model.CourseId}");
+                    return StatusCode(500, ModelState);
+                }
+
+
+
+                addCourse.UserId = model.UserId;
+                addCourse.CourseId = model.CourseId;
+
+                await _userRepo.RemoveCourse(addCourse);
+
+
+
+                if (addCourse == null)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Error while adding course");
+                    return BadRequest(_response);
+                }
+
+
+                return (_response);
+
+            }
+
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+
+
+
+            return (_response);
+        }
 
 
 
@@ -244,36 +274,6 @@ namespace ITHSCourseSchool.Controllers
 
         }
 
-        //[HttpGet("StudentsInSchool")]
-        //[ProducesResponseType(200)]
-        //public IActionResult StudentsInSchool()
-        //{
-
-        //    var users = _userRepo.GetStudents();
-
-
-
-        //    return Ok(users);
-
-
-
-        //}
-
-
-        //[HttpGet("Teachers")]
-        //[ProducesResponseType(200)]
-        //public IActionResult TeachersInSchool()
-        //{
-
-        //    var users = _userRepo.GetTeachers();
-
-
-
-        //    return Ok(users);
-
-
-
-        //}
 
 
 

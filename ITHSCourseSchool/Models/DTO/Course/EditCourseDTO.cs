@@ -14,6 +14,7 @@ namespace ITHSCourseSchool.Models.DTO.Course
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CourseStart { get; set; }
 
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CourseEnd { get; set; }

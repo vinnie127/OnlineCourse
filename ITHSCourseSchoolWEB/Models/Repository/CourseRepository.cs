@@ -29,7 +29,7 @@ namespace ITHSCourseSchoolWEB.Models.Repository
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = courseUrl +"/api/Course/CreateCourse",
+                Url = courseUrl + "/api/Course/CreateCourse",
                 Token = token
             });
         }
